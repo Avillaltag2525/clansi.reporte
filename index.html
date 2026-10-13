@@ -1,0 +1,509 @@
+
+const SB_URL='https://TU-PROYECTO.supabase.co';
+const SB_KEY='TU-CLAVE-ANON-PUBLICA';
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Solicitud de pedidos</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#f2f5f3;--card:#fff;--ink:#16221e;--mut:#5d6d66;--line:#d6dfda;--ac:#0e6b5b;--acx:#fff;--warn:#a65f00;--ok:#1f7a3d;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1714;--card:#17221e;--ink:#e6efeb;--mut:#92a59d;--line:#2a3a34;--ac:#3fc4aa;--acx:#06201a;--warn:#e0a24a;--ok:#5fcf86}}
+:root[data-theme="dark"]{--bg:#0f1714;--card:#17221e;--ink:#e6efeb;--mut:#92a59d;--line:#2a3a34;--ac:#3fc4aa;--acx:#06201a;--warn:#e0a24a;--ok:#5fcf86}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:1050px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:0 0 12px;font-weight:700}
+nav{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:14px}
+nav button{background:none;border:0;border-bottom:3px solid transparent;padding:10px 14px;font:inherit;color:var(--mut);cursor:pointer}
+nav button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--ac);font-weight:700}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin-bottom:12px}
+.bar label{display:flex;flex-direction:column;font-size:13px;color:var(--mut);gap:3px;flex:1 1 150px}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:6px;padding:8px;min-width:0;width:100%}
+input:focus-visible,select:focus-visible,button:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--ac);outline-offset:1px}
+button{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:6px;padding:8px 14px;cursor:pointer}
+button.pri{background:var(--ac);color:var(--acx);border-color:var(--ac);font-weight:700}
+.scroll{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;min-width:560px}
+th,td{padding:7px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-size:13px;color:var(--mut);font-weight:500}
+td input{max-width:110px;padding:5px 7px}td input:disabled{background:var(--bg);color:var(--mut);cursor:not-allowed}
+td input[data-k=referencia]{max-width:180px}
+details{background:var(--card);border:1px solid var(--line);border-radius:8px;margin-bottom:8px}
+summary{padding:11px 14px;cursor:pointer;display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center}
+details>.scroll{border:0;border-top:1px solid var(--line);border-radius:0}
+details>.bar{padding:10px 14px;margin:0}
+.st{margin-left:auto;font-weight:700;font-size:13px}
+.Pendiente{color:var(--warn)}.Enviado{color:var(--ac)}.Recibido{color:var(--ok)}
+.mut{color:var(--mut)}
+.empty{padding:22px;color:var(--mut)}
+.top{flex-wrap:wrap;display:flex;align-items:center;gap:14px;margin-bottom:12px}.top h1{margin:0}.logo{background:#fff;border-radius:8px;padding:4px 12px;display:flex}.logo img{height:44px;width:auto;display:block}
+dialog{border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);padding:18px;max-width:340px;width:90%}dialog::backdrop{background:rgba(0,0,0,.5)}#pwe{color:var(--warn);min-height:1.4em;font-size:13px;margin:6px 0}
+#uso{margin-left:auto;font-size:12px;color:var(--mut);text-align:right;min-width:170px}#uso .tr{display:block;height:5px;background:var(--line);border-radius:3px;margin-top:4px;overflow:hidden}#uso i{display:block;height:100%;background:var(--ac)}#uso.w{color:var(--warn)}#uso.w i{background:var(--warn)}#uso.w b{font-weight:700}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}.kpi{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px}.kpi b{display:block;font-size:26px;line-height:1.2}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:14px;margin-bottom:14px}h2{font-size:16px;margin:0 0 8px}
+.bt{display:block;height:5px;background:var(--line);border-radius:3px;margin-top:4px;overflow:hidden}.bt i{display:block;height:100%;background:var(--ac)}
+#login{max-width:520px;margin:24px auto}.ulist{display:grid;gap:8px;margin:10px 0 14px}.ucard{display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;padding:12px 14px}.ucard[aria-pressed=true]{border-color:var(--ac);outline:2px solid var(--ac)}.err{color:var(--warn);min-height:1.3em;margin:6px 0}#who{display:flex;gap:8px;align-items:center;font-size:13px}
+body:not([data-rol=admin]) [data-del],body:not([data-rol=admin]) #clean,body:not([data-rol=admin]) #bk,body:not([data-rol=admin]) #rs{display:none}
+.lk{background:none;border:0;color:var(--ac);text-decoration:underline;padding:6px 0;margin-top:6px}
+#msg{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;display:none;max-width:90%}
+#warn{background:var(--card);border:1px solid var(--warn);color:var(--warn);padding:10px 14px;border-radius:8px;margin-bottom:12px;display:none}
+textarea{min-height:120px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
+</style>
+</head>
+<body>
+<main>
+<header class="top"><span class="logo"><img src="data:image/png;base64,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" alt="Andián Bistro &amp; Café"></span><h1>Solicitud de pedidos</h1><div id="uso" role="status"></div><div id="who" hidden><span id="wn"></span><button id="out">Cerrar sesión</button></div>
+</header>
+<section id="login"><h2>Iniciar sesión</h2><div id="lbody"><p class="mut">Cargando…</p></div></section>
+<div id="app" hidden>
+<div class="bar" style="justify-content:flex-end"><button id="bk">Descargar respaldo</button></div>
+<nav role="tablist">
+<button role="tab" data-v="new" aria-selected="true">Nuevo pedido</button>
+<button role="tab" data-v="des" aria-selected="false">Despacho</button>
+<button role="tab" data-v="tra" aria-selected="false">Trazabilidad</button>
+<button role="tab" data-v="dash" aria-selected="false">Dashboard</button>
+<button role="tab" data-v="ped" aria-selected="false">Pedidos</button>
+<button role="tab" data-v="cat" aria-selected="false">Catálogo</button>
+<button role="tab" data-v="usr" aria-selected="false">Usuarios</button>
+</nav>
+
+<section id="v-new">
+<div class="bar">
+<label>Sucursal<select id="suc"></select></label>
+<label>Área<select id="area"></select></label>
+<label>Subárea<select id="sub"></select></label>
+<label>Fecha<input type="date" id="fecha"></label>
+</div>
+<div class="bar">
+<label style="flex:2 1 220px">Buscar<input id="q" type="search" placeholder="Producto o código"></label>
+<span id="sum" class="mut"></span>
+<button id="send" class="pri">Enviar solicitud</button>
+</div>
+<div class="scroll"><table id="tnew"></table></div>
+</section>
+
+<section id="v-des" hidden>
+<div class="bar">
+<label>Sucursal<select id="dsuc"></select></label>
+<label>Despachado por<input id="por" placeholder="Nombre de quien despacha"></label>
+</div>
+<p class="mut" style="margin:0 0 10px">Aquí aparecen los pedidos pendientes. Ajusta la cantidad a enviar y confirma: el despacho queda registrado y ya no se puede editar.</p>
+<div id="dlist"></div>
+</section>
+
+<section id="v-tra" hidden>
+<div class="bar">
+<label>Sucursal<select id="tsuc"></select></label>
+<label>Mostrar<select id="tdif"><option value="">Todos los despachos</option><option value="1">Solo con diferencias</option></select></label>
+<button id="tcsv">Descargar Excel</button>
+</div>
+<div class="scroll"><table id="ttra" style="min-width:900px"></table></div>
+</section>
+
+<section id="v-dash" hidden>
+<div class="bar">
+<label>Desde<input type="date" id="bde"></label>
+<label>Hasta<input type="date" id="bha"></label>
+<label>Sucursal<select id="bsuc"></select></label>
+<label style="flex:2 1 200px">Producto<input id="bq" type="search" placeholder="Nombre o código"></label>
+<button id="bxl">Descargar Excel</button>
+</div>
+<div class="kpis" id="kpis"></div>
+<div class="grid2">
+<div><h2>Por sucursal</h2><div class="scroll"><table id="tsucd" style="min-width:0"></table></div></div>
+<div><h2>Por producto</h2><div class="scroll"><table id="tprod" style="min-width:0"></table></div></div>
+</div>
+<h2>Detalle por fecha y sucursal</h2>
+<div class="scroll"><table id="tdet"></table></div>
+<p id="dnote" class="mut"></p>
+</section>
+
+<section id="v-usr" hidden>
+<form id="fusr" class="bar" onsubmit="return false">
+<label>Usuario<input id="uu" required autocomplete="off"></label>
+<label>Nombre<input id="un" required></label>
+<label>Rol<select id="ur"><option value="sucursal">Sucursal</option><option value="despacho">Despacho</option><option value="admin">Administrador</option></select></label>
+<label>Sucursal<select id="us"></select></label>
+<label>Contraseña<input type="password" id="up" autocomplete="new-password" placeholder="Vacía = no cambia"></label>
+<button class="pri" id="usave">Guardar usuario</button>
+</form>
+<p class="mut" style="margin:0 0 10px">Sucursal: crea pedidos y consulta los de su sucursal. Despacho: despacha y ve trazabilidad y dashboard. Administrador: todo, incluido eliminar y gestionar usuarios.</p>
+<div class="scroll"><table id="tusr"></table></div>
+</section>
+
+<section id="v-ped" hidden>
+<div class="bar">
+<label>Sucursal<select id="fsuc"></select></label>
+<label>Estado<select id="fest"></select></label>
+<button id="csv">Descargar Excel</button><button id="clean">Eliminar enviados</button>
+</div>
+<div id="plist"></div>
+</section>
+
+<section id="v-cat" hidden>
+<form id="fcat" class="bar" onsubmit="return false">
+<label>Código<input id="cc" required></label>
+<label style="flex:2 1 220px">Producto<input id="cp" required></label>
+<label>Área<input id="ca" list="la" required></label>
+<label>Subárea<input id="cs" list="ls" required></label>
+<label>Unidad<input id="cu" placeholder="PACK" required></label>
+<button class="pri" id="cadd">Guardar producto</button>
+</form>
+<datalist id="la"></datalist><datalist id="ls"></datalist>
+<details style="margin-bottom:12px"><summary>Importar desde Excel</summary>
+<div class="bar" style="padding:0 14px 12px;display:block">
+<p class="mut">Pega filas con las columnas: Código, Producto, Área, Subárea, Unidad. Si el código ya existe, se actualiza.</p>
+<input type="file" id="pf" accept=".csv,.txt,.tsv"><br><br><textarea id="paste" placeholder="o pega aquí las filas copiadas de Excel"></textarea><br><br><button id="imp" class="pri">Importar</button>
+</div></details>
+<div class="scroll"><table id="tcat"></table></div>
+</section>
+</div>
+</main>
+<dialog id="dpw"><form id="pwf"><p id="pwm" style="margin:0 0 4px;font-weight:700"></p><p class="mut" style="margin:0 0 10px">Escribe la contraseña para continuar.</p><input type="password" id="pwi" autocomplete="off" aria-label="Contraseña"><p id="pwe" role="alert"></p><div class="bar" style="justify-content:flex-end;margin:0"><button type="button" id="pwc">Cancelar</button><button class="pri">Confirmar</button></div></form></dialog>
+<dialog id="dsec"><p id="st" style="margin:0 0 6px;font-weight:700"></p><p id="sx" class="mut" style="margin:0 0 10px"></p><p style="margin:0 0 12px"><code id="sv" style="font-size:20px;letter-spacing:1px;font-weight:700;user-select:all"></code></p><div class="bar" style="justify-content:flex-end;margin:0"><button id="sc">Copiar</button><button class="pri" id="sk">Listo</button></div></dialog>
+<div id="msg" role="status"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
+<script>
+const SB_URL='https://TU-PROYECTO.supabase.co';
+const SB_KEY='TU-CLAVE-ANON-PUBLICA';
+const SUC=['ATRIO','EDC','LGV','LGV-GELU','MALTA','METROCENTRO','RAMBLAS'];
+const EST=['Pendiente','Enviado','Recibido'];
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const key=c=>String(c).trim().replace(/[^\w-]/g,'_');
+const PWH='f1a1b2438c70589e358e9bf292f0c0939a0748df6616aed37cef33de1ea9af1b';
+async function sha(t){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+function askPw(msg,force){if(!force&&(!me||me.rol!=='admin')){toast('Solo el administrador puede eliminar');return Promise.resolve(false)}return new Promise(res=>{const d=$('#dpw'),i=$('#pwi'),e=$('#pwe');$('#pwm').textContent=msg;i.value='';e.textContent='';
+  $('#pwf').onsubmit=async ev=>{ev.preventDefault();try{if(await sha(i.value)===PWH){d.close();res(true)}else{e.textContent='Contraseña incorrecta';i.select()}}catch(x){e.textContent='Este navegador no permite validar la contraseña'}};
+  $('#pwc').onclick=()=>{d.close();res(false)};d.oncancel=()=>res(false);d.showModal();i.focus()})}
+/*XLSX*/
+const crcT=(()=>{const t=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+const crc=b=>{let c=-1;for(let i=0;i<b.length;i++)c=crcT[(c^b[i])&255]^(c>>>8);return(c^-1)>>>0};
+function zip(files){const enc=new TextEncoder(),parts=[],cen=[];let off=0;const ent=Object.entries(files);
+  for(const[n,t]of ent){const nb=enc.encode(n),d=enc.encode(t),c=crc(d);
+    const lh=new DataView(new ArrayBuffer(30));lh.setUint32(0,0x04034b50,true);lh.setUint16(4,20,true);lh.setUint16(6,0x0800,true);lh.setUint16(12,0x21,true);lh.setUint32(14,c,true);lh.setUint32(18,d.length,true);lh.setUint32(22,d.length,true);lh.setUint16(26,nb.length,true);
+    parts.push(new Uint8Array(lh.buffer),nb,d);
+    const ch=new DataView(new ArrayBuffer(46));ch.setUint32(0,0x02014b50,true);ch.setUint16(4,20,true);ch.setUint16(6,20,true);ch.setUint16(8,0x0800,true);ch.setUint16(14,0x21,true);ch.setUint32(16,c,true);ch.setUint32(20,d.length,true);ch.setUint32(24,d.length,true);ch.setUint16(28,nb.length,true);ch.setUint32(42,off,true);
+    cen.push(new Uint8Array(ch.buffer),nb);off+=30+nb.length+d.length}
+  const cl=cen.reduce((a,b)=>a+b.length,0),e=new DataView(new ArrayBuffer(22));
+  e.setUint32(0,0x06054b50,true);e.setUint16(8,ent.length,true);e.setUint16(10,ent.length,true);e.setUint32(12,cl,true);e.setUint32(16,off,true);
+  return new Blob([...parts,...cen,new Uint8Array(e.buffer)],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})}
+function xlsx(name,rows){
+  const x=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g,'');
+  const M='http://schemas.openxmlformats.org/spreadsheetml/2006/main',R='http://schemas.openxmlformats.org/officeDocument/2006/relationships',H='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n';
+  const sd=rows.map((r,ri)=>`<row r="${ri+1}">`+r.map((v,ci)=>{const ref=String.fromCharCode(65+ci)+(ri+1);return typeof v==='number'&&isFinite(v)?`<c r="${ref}"><v>${v}</v></c>`:`<c r="${ref}" t="inlineStr"${ri===0?' s="1"':''}><is><t xml:space="preserve">${x(v)}</t></is></c>`}).join('')+'</row>').join('');
+  const cols=rows[0].map((_,i)=>`<col min="${i+1}" max="${i+1}" width="${Math.min(42,Math.max(10,...rows.map(r=>String(r[i]??'').length))+2)}" customWidth="1"/>`).join('');
+  return zip({
+    '[Content_Types].xml':H+`<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`,
+    '_rels/.rels':H+`<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${R}/officeDocument" Target="xl/workbook.xml"/></Relationships>`,
+    'xl/workbook.xml':H+`<workbook xmlns="${M}" xmlns:r="${R}"><sheets><sheet name="${x(name)}" sheetId="1" r:id="rId1"/></sheets></workbook>`,
+    'xl/_rels/workbook.xml.rels':H+`<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${R}/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="${R}/styles" Target="styles.xml"/></Relationships>`,
+    'xl/styles.xml':H+`<styleSheet xmlns="${M}"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`,
+    'xl/worksheets/sheet1.xml':H+`<worksheet xmlns="${M}"><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols>${cols}</cols><sheetData>${sd}</sheetData></worksheet>`})}
+/*END*/
+const fmtCor=n=>'PED-'+String(n).padStart(6,'0');
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const maxNum=()=>Math.max(0,...ped.map(p=>p.numero||0),...desp.map(d=>d.numero||0));
+async function lease(fn){const ref=db.doc('config/correlativo'),holder=Math.random().toString(36).slice(2);
+  for(let i=0;i<14;i++){const r=await ref.acquire({holder,ttlMs:4000});if(r.acquired)return fn(ref);await sleep(500)}
+  throw new Error('ocupado')}
+async function nextNum(){
+  if(db.nextNum)return db.nextNum();
+  if(typeof db.doc('config/correlativo').acquire!=='function')return Math.max(+localStorage.getItem('ult_num')||0,maxNum())+1;
+  return lease(async ref=>{const q=await db.collection('pedidos').get(),c=await ref.get();
+    return Math.max((c.exists&&c.data().ultimo)||0,maxNum(),...q.docs.map(d=>d.data().numero||0))+1})}
+async function saveUltimo(n){
+  if(db.nextNum)return;
+  if(typeof db.doc('config/correlativo').acquire!=='function'){if(n>(+localStorage.getItem('ult_num')||0))localStorage.setItem('ult_num',n);return}
+  return lease(async ref=>{const c=await ref.get();if(n>((c.exists&&c.data().ultimo)||0))await ref.update({ultimo:n})})}
+async function saveX(f,n,rows){if(!dl)return toast('La descarga no está disponible aquí');try{await dl.save({filename:f,data:xlsx(n,rows)})}catch(x){}}
+let db=null,dl=null,cat=[],ped=[],desp=[],dd={},draft={},open=new Set();
+
+function toast(t){const m=$('#msg');m.textContent=t;m.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>m.style.display='none',2800)}
+const uniq=a=>[...new Set(a.filter(Boolean))].sort();
+function opts(el,list,all){const v=el.value;el.innerHTML=(all?`<option value="">${all}</option>`:'')+list.map(x=>`<option>${esc(x)}</option>`).join('');if(list.includes(v)||v==='')el.value=v}
+
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-selected',x===b));
+  ['new','des','tra','dash','ped','cat','usr'].forEach(v=>$('#v-'+v).hidden=v!==b.dataset.v)});
+
+/* ---- Nuevo pedido ---- */
+function fillSel(){
+  opts($('#suc'),SUC);
+  opts($('#area'),uniq(cat.map(p=>p.area)),'Todas');
+  const a=$('#area').value;
+  opts($('#sub'),uniq(cat.filter(p=>!a||p.area===a).map(p=>p.subarea)),'Todas');
+  opts($('#fsuc'),SUC,'Todas');opts($('#dsuc'),SUC,'Todas');opts($('#tsuc'),SUC,'Todas');opts($('#us'),SUC);opts($('#bsuc'),SUC,'Todas');opts($('#fest'),EST,'Todos');
+  $('#la').innerHTML=uniq(cat.map(p=>p.area)).map(x=>`<option value="${esc(x)}">`).join('');
+  $('#ls').innerHTML=uniq(cat.map(p=>p.subarea)).map(x=>`<option value="${esc(x)}">`).join('');
+}
+function count(){const n=Object.values(draft).filter(d=>d.cantidad>0).length;$('#sum').textContent=n?n+' producto'+(n>1?'s':'')+' en el pedido':''}
+function drawNew(){
+  const a=$('#area').value,s=$('#sub').value,q=$('#q').value.toLowerCase();
+  const rows=cat.filter(p=>(!a||p.area===a)&&(!s||p.subarea===s)&&(!q||(p.producto+' '+p.codigo).toLowerCase().includes(q))).sort((x,y)=>x.producto.localeCompare(y.producto));
+  $('#tnew').innerHTML=rows.length?'<tr><th>Producto</th><th>Código</th><th>Cantidad</th><th>Unidad</th><th>Referencia</th></tr>'+rows.map(p=>{const d=draft[p.codigo]||{};const c=esc(p.codigo);
+    return `<tr><td>${esc(p.producto)}</td><td>${c}</td><td><input type="number" min="0" step="0.5" data-c="${c}" data-k="cantidad" value="${d.cantidad??''}"></td><td>${esc(p.unidad)}</td><td><input data-c="${c}" data-k="referencia" value="${esc(d.referencia)}"></td></tr>`}).join(''):'<tr><td class="empty">No hay productos. Agrégalos en la pestaña Catálogo.</td></tr>';
+  count();
+}
+['area','sub','q'].forEach(i=>$('#'+i).addEventListener('input',()=>{if(i==='area')fillSel();drawNew()}));
+$('#tnew').addEventListener('input',e=>{const t=e.target,c=t.dataset.c;if(!c)return;
+  const d=draft[c]||(draft[c]={});d[t.dataset.k]=t.dataset.k==='cantidad'?parseFloat(t.value)||0:t.value;count()});
+$('#fecha').value=new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
+
+$('#send').onclick=async()=>{
+  if(!db)return toast('Sin conexión con la base de datos');
+  const lineas=cat.filter(p=>draft[p.codigo]?.cantidad>0).map(p=>({codigo:p.codigo,producto:p.producto,unidad:p.unidad,referencia:draft[p.codigo].referencia||'',cantidad:draft[p.codigo].cantidad,transferir:draft[p.codigo].cantidad}));
+  if(!lineas.length)return toast('Escribe una cantidad en al menos un producto');
+  if(!$('#fecha').value)return toast('Elige la fecha');
+  $('#send').disabled=true;
+  try{const num=await nextNum(),cor=fmtCor(num);await db.collection('pedidos').add({creadoPor:me?me.nombre:'',numero:num,correlativo:cor,sucursal:$('#suc').value,area:$('#area').value,subarea:$('#sub').value,fecha:$('#fecha').value,estado:'Pendiente',creado:Date.now(),lineas});
+    draft={};drawNew();toast('Solicitud '+cor+' enviada')}catch(e){toast('No se pudo enviar: '+(e.message||e.code))}
+  $('#send').disabled=false;
+};
+
+/* ---- Pedidos ---- */
+const filtered=()=>{const s=$('#fsuc').value,e=$('#fest').value;return ped.filter(p=>(!s||p.sucursal===s)&&(!e||p.estado===e)&&(!me||me.rol!=='sucursal'||p.sucursal===me.sucursal))};
+function drawPed(){drawUso();
+  const L=filtered();
+  $('#plist').innerHTML=L.length?L.map(p=>`<details data-id="${p._id}" ${open.has(p._id)?'open':''}><summary><b>${esc(p.correlativo||'S/N')}</b><span>${esc(p.sucursal)}</span><span>${esc(p.subarea||p.area||'Todas las áreas')}</span><span class="mut">${esc(p.fecha)}</span><span class="mut">${p.lineas.length} productos</span><span class="st ${p.estado}">${p.estado}</span></summary>
+  <div class="scroll"><table><tr><th>Producto</th><th>Código</th><th>Referencia</th><th>Cantidad</th><th>Cantidad enviada</th><th>Unidad</th></tr>${p.lineas.map((l,i)=>`<tr><td>${esc(l.producto)}</td><td>${esc(l.codigo)}</td><td>${esc(l.referencia)}</td><td><input type="number" value="${l.cantidad}" disabled aria-label="Cantidad solicitada"></td><td>${p.estado==='Pendiente'?'<span class="mut">Sin despachar</span>':l.transferir}</td><td>${esc(l.unidad)}</td></tr>`).join('')}</table></div>
+  <div class="bar"><label>Estado<select data-e="${p._id}" ${me&&me.rol==='sucursal'?'disabled':''}>${EST.map(e=>`<option ${e===p.estado?'selected':''}>${e}</option>`).join('')}</select></label><button data-del="${p._id}">Eliminar pedido</button></div></details>`).join(''):'<p class="empty">No hay pedidos con estos filtros.</p>';
+}
+['fsuc','fest'].forEach(i=>$('#'+i).addEventListener('input',drawPed));
+document.addEventListener('toggle',e=>{const id=e.target.dataset?.id;if(id)e.target.open?open.add(id):open.delete(id)},true);
+$('#plist').addEventListener('change',async e=>{const t=e.target;if(!db)return;
+  try{if(t.dataset.p){const p=ped.find(x=>x._id===t.dataset.p),l=p.lineas.map(x=>({...x}));l[t.dataset.i].transferir=parseFloat(t.value)||0;await db.doc('pedidos/'+p._id).update({lineas:l});toast('Cantidad a enviar guardada')}
+  else if(t.dataset.e){await db.doc('pedidos/'+t.dataset.e).update({estado:t.value});toast('Estado actualizado')}}catch(x){toast('No se pudo guardar')}});
+$('#plist').addEventListener('click',async e=>{const id=e.target.dataset?.del;if(!id||!(await askPw('Eliminar este pedido')))return;try{await db.doc('pedidos/'+id).delete()}catch(x){toast('No se pudo eliminar')}});
+$('#clean').onclick=async()=>{
+  const s=$('#fsuc').value,L=ped.filter(p=>p.estado!=='Pendiente'&&(!s||p.sucursal===s));
+  if(!L.length)return toast('No hay pedidos enviados para eliminar');
+  if(!db)return toast('Sin conexión con la base de datos');
+  if(!(await askPw(`Eliminar ${L.length} pedido(s) enviados o recibidos de ${s||'todas las sucursales'}. Los pendientes no se tocan y el correlativo se conserva.`)))return;
+  try{await saveUltimo(maxNum());let n=0;for(const p of L){await db.doc('pedidos/'+p._id).delete();n++}
+    toast(n+' pedidos eliminados. El correlativo continúa en PED-'+String(maxNum()+1).padStart(6,'0'))}
+  catch(e){toast('No se pudo completar la limpieza; revisa la lista y vuelve a intentar')}
+};
+$('#csv').onclick=async()=>{
+  const rows=[['Pedido','Producto','Código','Punto','Fecha','Referencia','Cantidad','Cantidad enviada','Unidad','Estado']];
+  filtered().forEach(p=>p.lineas.forEach(l=>rows.push([p.correlativo||'S/N',l.producto,l.codigo,p.sucursal,p.fecha,l.referencia,l.cantidad,p.estado==='Pendiente'?'':l.transferir,l.unidad,p.estado])));
+  if(rows.length<2)return toast('No hay pedidos para exportar');
+  saveX('pedidos.xlsx','Pedidos',rows);
+};
+
+
+/* ---- Despacho ---- */
+const fmt=d=>{d=+d.toFixed(2);return d===0?'0':(d>0?'+':'')+d};
+const val=(id,i,l)=>{const v=(dd[id+'-'+i]||{}).env;return v===undefined||v===''?l.cantidad:parseFloat(v)};
+function drawDesp(){drawUso();
+  const s=$('#dsuc').value,L=ped.filter(p=>p.estado==='Pendiente'&&(!s||p.sucursal===s));
+  $('#dlist').innerHTML=L.length?L.map(p=>`<details data-id="${p._id}" ${open.has(p._id)?'open':''}><summary><b>${esc(p.correlativo||'S/N')}</b><span>${esc(p.sucursal)}</span><span>${esc(p.subarea||p.area||'Todas las áreas')}</span><span class="mut">${esc(p.fecha)}</span><span class="mut">${p.lineas.length} productos</span></summary>
+  <div class="scroll"><table><tr><th>Producto</th><th>Código</th><th>Cantidad</th><th>Cantidad a enviar</th><th>Diferencia</th><th>Unidad</th><th>Nota</th></tr>${p.lineas.map((l,i)=>`<tr><td>${esc(l.producto)}</td><td>${esc(l.codigo)}</td><td><input type="number" value="${l.cantidad}" disabled aria-label="Cantidad solicitada"></td><td><input type="number" min="0" step="0.5" data-d="${p._id}" data-i="${i}" data-k="env" aria-label="Cantidad a enviar" value="${val(p._id,i,l)}"></td><td id="df-${p._id}-${i}">${fmt(val(p._id,i,l)-l.cantidad)}</td><td>${esc(l.unidad)}</td><td><input data-d="${p._id}" data-i="${i}" data-k="nota" aria-label="Nota" placeholder="Motivo si difiere" value="${esc((dd[p._id+'-'+i]||{}).nota)}"></td></tr>`).join('')}</table></div>
+  <div class="bar"><button class="pri" data-ok="${p._id}">Confirmar despacho</button></div></details>`).join(''):'<p class="empty">No hay pedidos pendientes de despacho.</p>';
+}
+$('#dsuc').addEventListener('input',drawDesp);
+$('#por').value=localStorage.getItem('por')||'';
+$('#dlist').addEventListener('input',e=>{const t=e.target,id=t.dataset.d;if(!id)return;const k=id+'-'+t.dataset.i,d=dd[k]||(dd[k]={});d[t.dataset.k]=t.value;
+  if(t.dataset.k==='env'){const p=ped.find(x=>x._id===id),c=$('#df-'+k);if(c)c.textContent=isNaN(parseFloat(t.value))?'':fmt(parseFloat(t.value)-p.lineas[t.dataset.i].cantidad)}});
+$('#dlist').addEventListener('click',async e=>{
+  const id=e.target.dataset?.ok;if(!id)return;
+  const por=$('#por').value.trim();if(!por)return toast('Escribe quién despacha');
+  if(!db)return toast('Sin conexión con la base de datos');
+  const p=ped.find(x=>x._id===id);
+  const lineas=p.lineas.map((l,i)=>({...l,transferir:val(id,i,l),nota:(dd[id+'-'+i]||{}).nota||''}));
+  if(lineas.some(l=>isNaN(l.transferir)||l.transferir<0))return toast('Revisa las cantidades a enviar');
+  const n=lineas.filter(l=>l.transferir!==l.cantidad).length;
+  if(!confirm(n?`${n} producto(s) con diferencia. ¿Confirmar el despacho?`:'¿Confirmar el despacho?'))return;
+  localStorage.setItem('por',por);
+  try{const ts=Date.now();
+    await db.collection('despachos').add({pedido:id,correlativo:p.correlativo||'',numero:p.numero||0,sucursal:p.sucursal,fechaPedido:p.fecha,por,ts,lineas:lineas.map(l=>({codigo:l.codigo,producto:l.producto,unidad:l.unidad,solicitado:l.cantidad,enviado:l.transferir,nota:l.nota}))});
+    await db.doc('pedidos/'+id).update({lineas,estado:'Enviado',despacho:{por,ts}});
+    p.lineas.forEach((l,i)=>delete dd[id+'-'+i]);toast('Despacho registrado')}catch(x){toast('No se pudo registrar el despacho')}
+});
+
+/* ---- Trazabilidad ---- */
+function flat(){const s=$('#tsuc').value,o=$('#tdif').value,r=[];
+  desp.forEach(d=>{if(s&&d.sucursal!==s)return;d.lineas.forEach(l=>{const df=+(l.enviado-l.solicitado).toFixed(2);if(o&&!df)return;r.push({d,l,df})})});return r}
+const when=ts=>new Date(ts).toLocaleString('es');
+function drawTra(){drawUso();drawDash();
+  const R=flat();
+  $('#ttra').innerHTML=R.length?'<tr><th>Despachado</th><th>Pedido</th><th>Sucursal</th><th>Fecha pedido</th><th>Producto</th><th>Código</th><th>Solicitado</th><th>Enviado</th><th>Diferencia</th><th>Unidad</th><th>Nota</th><th>Despachó</th></tr>'+R.map(({d,l,df})=>`<tr><td>${when(d.ts)}</td><td>${esc(d.correlativo||'S/N')}</td><td>${esc(d.sucursal)}</td><td>${esc(d.fechaPedido)}</td><td>${esc(l.producto)}</td><td>${esc(l.codigo)}</td><td>${l.solicitado}</td><td>${l.enviado}</td><td${df?` class="${df<0?'Pendiente':'Enviado'}"`:''}><b>${fmt(df)}</b></td><td>${esc(l.unidad)}</td><td>${esc(l.nota)}</td><td>${esc(d.por)}</td></tr>`).join(''):'<tr><td class="empty">Todavía no hay despachos registrados.</td></tr>';
+}
+['tsuc','tdif'].forEach(i=>$('#'+i).addEventListener('input',drawTra));
+$('#tcsv').onclick=async()=>{const R=flat();if(!R.length)return toast('No hay despachos para exportar');
+  saveX('trazabilidad_despachos.xlsx','Trazabilidad',[['Despachado','Pedido','Sucursal','Fecha pedido','Producto','Código','Solicitado','Enviado','Diferencia','Unidad','Nota','Despachó'],...R.map(({d,l,df})=>[when(d.ts),d.correlativo||'S/N',d.sucursal,d.fechaPedido,l.producto,l.codigo,l.solicitado,l.enviado,df,l.unidad,l.nota,d.por])]);
+};
+
+
+/* ---- Dashboard ---- */
+const dayOf=ts=>new Date(ts-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const base=()=>({sol:0,env:0,n:0,dif:0,d:new Set(),p:new Set()});
+const rd=x=>+x.toFixed(2);
+function dashRows(){const s=$('#bsuc').value,a=$('#bde').value,b=$('#bha').value,q=$('#bq').value.trim().toLowerCase();
+  return desp.flatMap(d=>d.lineas.map(l=>({d,l,day:dayOf(d.ts)}))).filter(r=>(!s||r.d.sucursal===s)&&(!a||r.day>=a)&&(!b||r.day<=b)&&(!q||(r.l.producto+' '+r.l.codigo).toLowerCase().includes(q)))}
+function grp(R,kf,init){const m=new Map();R.forEach(r=>{const k=kf(r);let g=m.get(k);if(!g){g={...init(r),...base()};m.set(k,g)}g.sol+=r.l.solicitado;g.env+=r.l.enviado;g.n++;if(r.l.enviado!==r.l.solicitado)g.dif++;g.d.add(r.d._id);g.p.add(r.l.codigo)});return[...m.values()]}
+function dashDet(R){return grp(R,r=>r.day+'|'+r.d.sucursal+'|'+r.l.codigo,r=>({day:r.day,suc:r.d.sucursal,producto:r.l.producto,codigo:r.l.codigo,unidad:r.l.unidad})).sort((a,b)=>b.day.localeCompare(a.day)||a.suc.localeCompare(b.suc)||a.producto.localeCompare(b.producto))}
+function drawDash(){
+  const R=dashRows(),k=(t,v)=>`<div class="kpi"><span class="mut">${t}</span><b>${v}</b></div>`,none='<tr><td class="empty">Sin despachos con estos filtros.</td></tr>';
+  const nd=new Set(R.map(r=>r.d._id)).size,np=new Set(R.map(r=>r.l.codigo)).size,nx=R.filter(r=>r.l.enviado!==r.l.solicitado).length;
+  $('#kpis').innerHTML=k('Despachos',nd)+k('Productos distintos',np)+k('Líneas despachadas',R.length)+k('Líneas con diferencia',nx);
+  const S=grp(R,r=>r.d.sucursal,r=>({suc:r.d.sucursal})).sort((a,b)=>b.n-a.n),mx=Math.max(1,...S.map(x=>x.n));
+  $('#tsucd').innerHTML=S.length?'<tr><th>Sucursal</th><th>Despachos</th><th>Productos</th><th>Líneas</th><th>Con dif.</th></tr>'+S.map(x=>`<tr><td>${esc(x.suc)}<span class="bt"><i style="width:${x.n/mx*100}%"></i></span></td><td>${x.d.size}</td><td>${x.p.size}</td><td>${x.n}</td><td>${x.dif}</td></tr>`).join(''):none;
+  const P=grp(R,r=>r.l.codigo,r=>({producto:r.l.producto,codigo:r.l.codigo,unidad:r.l.unidad})).sort((a,b)=>b.env-a.env);
+  $('#tprod').innerHTML=P.length?'<tr><th>Producto</th><th>Solicitado</th><th>Enviado</th><th>Dif.</th><th>Unidad</th></tr>'+P.slice(0,50).map(x=>`<tr><td>${esc(x.producto)}<br><span class="mut">${esc(x.codigo)}</span></td><td>${rd(x.sol)}</td><td><b>${rd(x.env)}</b></td><td>${fmt(x.env-x.sol)}</td><td>${esc(x.unidad)}</td></tr>`).join(''):none;
+  const D=dashDet(R);
+  $('#tdet').innerHTML=D.length?'<tr><th>Fecha</th><th>Sucursal</th><th>Producto</th><th>Código</th><th>Solicitado</th><th>Enviado</th><th>Diferencia</th><th>Unidad</th></tr>'+D.slice(0,400).map(x=>`<tr><td>${esc(x.day)}</td><td>${esc(x.suc)}</td><td>${esc(x.producto)}</td><td>${esc(x.codigo)}</td><td>${rd(x.sol)}</td><td><b>${rd(x.env)}</b></td><td>${fmt(x.env-x.sol)}</td><td>${esc(x.unidad)}</td></tr>`).join(''):none;
+  $('#dnote').textContent=(P.length>50?'Por producto: se muestran los 50 con más cantidad enviada. ':'')+(D.length>400?`Detalle: se muestran 400 de ${D.length} filas; el Excel trae todas.`:'');
+}
+['bde','bha','bsuc','bq'].forEach(i=>$('#'+i).addEventListener('input',drawDash));
+$('#bxl').onclick=()=>{const D=dashDet(dashRows());if(!D.length)return toast('No hay despachos para exportar');
+  saveX('detalle_despachos.xlsx','Detalle',[['Fecha','Sucursal','Producto','Código','Solicitado','Enviado','Diferencia','Unidad'],...D.map(x=>[x.day,x.suc,x.producto,x.codigo,rd(x.sol),rd(x.env),rd(x.env-x.sol),x.unidad])])};
+
+/* ---- Catálogo ---- */
+function drawCat(){drawUso();
+  const L=[...cat].sort((a,b)=>(a.area+a.subarea+a.producto).localeCompare(b.area+b.subarea+b.producto));
+  $('#tcat').innerHTML=L.length?'<tr><th>Producto</th><th>Código</th><th>Área</th><th>Subárea</th><th>Unidad</th><th></th></tr>'+L.map(p=>`<tr><td>${esc(p.producto)}</td><td>${esc(p.codigo)}</td><td>${esc(p.area)}</td><td>${esc(p.subarea)}</td><td>${esc(p.unidad)}</td><td><button data-edit="${esc(p._id)}">Editar</button> <button data-rm="${esc(p._id)}">Quitar</button></td></tr>`).join(''):'<tr><td class="empty">El catálogo está vacío. Agrega un producto o importa tu lista desde Excel.</td></tr>';
+}
+$('#cadd').onclick=async()=>{
+  const f=$('#fcat');if(!f.reportValidity())return;if(!db)return toast('Sin conexión con la base de datos');
+  const p={codigo:$('#cc').value.trim(),producto:$('#cp').value.trim(),area:$('#ca').value.trim(),subarea:$('#cs').value.trim(),unidad:$('#cu').value.trim()};
+  try{await db.doc('catalogo/'+key(p.codigo)).set(p);f.reset();toast('Producto guardado')}catch(e){toast('No se pudo guardar')}
+};
+$('#tcat').addEventListener('click',async e=>{
+  const rm=e.target.dataset?.rm,ed=e.target.dataset?.edit;
+  if(ed){const p=cat.find(x=>x._id===ed);$('#cc').value=p.codigo;$('#cp').value=p.producto;$('#ca').value=p.area;$('#cs').value=p.subarea;$('#cu').value=p.unidad;scrollTo(0,0)}
+  if(rm&&await askPw('Quitar este producto del catálogo'))try{await db.doc('catalogo/'+rm).delete()}catch(x){toast('No se pudo quitar')}
+});
+$('#imp').onclick=async()=>{
+  if(!db)return toast('Sin conexión con la base de datos');
+  const items=$('#paste').value.split(/\r?\n/).map(l=>l.split(/\t|;/).map(x=>x.trim())).filter(r=>r.length>=5&&r[0]&&!/^c[oó]digo$/i.test(r[0])).map(r=>({codigo:r[0],producto:r[1],area:r[2],subarea:r[3],unidad:r[4]}));
+  if(!items.length)return toast('No encontré filas con 5 columnas');
+  try{for(let i=0;i<items.length;i+=20)await Promise.all(items.slice(i,i+20).map(p=>db.doc('catalogo/'+key(p.codigo)).set(p)));
+    $('#paste').value='';toast(items.length+' productos importados')}catch(e){toast('La importación se interrumpió; vuelve a intentarlo')}
+};
+
+function drawUso(){const e=$('#uso');if(!e)return;e.className='';e.innerHTML='<span>Documentos guardados: '+(cat.length+ped.length+desp.length+usr.length).toLocaleString('es')+'</span>'}
+
+/* ---- Sesión y usuarios ---- */
+let usr=[],usrOk=false,me=null,pick='',lock=false;
+const ROL={admin:'Administrador',despacho:'Despacho',sucursal:'Sucursal'};
+const TABS={admin:['new','des','tra','dash','ped','cat','usr'],despacho:['des','tra','dash','ped'],sucursal:['new','ped']};
+const uh=(u,p)=>sha(u.trim().toLowerCase()+':'+p);
+const adminsActivos=()=>usr.filter(u=>u.rol==='admin'&&u.activo!==false).length;
+const AL='ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+const rnd=(n)=>{const a=new Uint32Array(n);crypto.getRandomValues(a);return[...a].map(x=>AL[x%AL.length]).join('')};
+const tmpPw=()=>rnd(8),recCode=()=>rnd(4)+'-'+rnd(4)+'-'+rnd(4);
+const rh=(u,c)=>sha(u.trim().toLowerCase()+':rec:'+c.replace(/[\s-]/g,'').toUpperCase());
+function showSecret(t,x,v){return new Promise(res=>{const d=$('#dsec');$('#st').textContent=t;$('#sx').textContent=x;$('#sv').textContent=v;
+  $('#sc').onclick=()=>{navigator.clipboard&&navigator.clipboard.writeText(v).then(()=>toast('Copiado'),()=>{})};
+  $('#sk').onclick=()=>{d.close();res()};d.oncancel=()=>res();d.showModal()})}
+function drawChange(u){lock=true;$('#lbody').innerHTML=`<p>Hola, <b>${esc(u.nombre)}</b>. Crea una contraseña nueva para continuar.</p><div class="bar"><label>Nueva contraseña<input type="password" id="n1" autocomplete="new-password"></label><label>Repítela<input type="password" id="n2" autocomplete="new-password"></label></div><button class="pri" id="cg" data-u="${esc(u._id)}">Guardar y entrar</button><p id="le" class="err" role="alert"></p>`}
+function drawRecover(){lock=true;$('#lbody').innerHTML='<p class="mut">Si eres administrador, escribe tu usuario y tu código de recuperación. Si no lo eres, pide a un administrador que restablezca tu contraseña desde la pestaña Usuarios.</p><div class="bar"><label>Usuario<input id="ru" autocomplete="off"></label><label>Código de recuperación<input id="rc" autocomplete="off"></label><label>Nueva contraseña<input type="password" id="rp" autocomplete="new-password"></label></div><div class="bar"><button class="pri" id="rg">Recuperar acceso</button><button id="rb">Volver</button></div><p id="le" class="err" role="alert"></p>'}
+function drawLogin(f){
+  const L=$('#lbody');if(me||(lock&&!f))return;lock=false;
+  if(!usrOk){L.innerHTML='<p class="mut">Cargando…</p>';return}
+  if(!usr.length){L.innerHTML='<p class="mut">Todavía no hay usuarios. Crea el administrador para empezar.</p><div class="bar"><label>Usuario<input id="au" autocomplete="off"></label><label>Nombre<input id="an"></label><label>Contraseña<input type="password" id="ap" autocomplete="new-password"></label></div><button class="pri" id="ac">Crear administrador</button><p id="le" class="err" role="alert"></p>';return}
+  L.innerHTML=`<p class="mut">Elige tu usuario e ingresa tu contraseña.</p><div class="ulist">${usr.filter(u=>u.activo!==false).sort((a,b)=>a.nombre.localeCompare(b.nombre)).map(u=>`<button class="ucard" data-pick="${esc(u._id)}" aria-pressed="${u._id===pick}"><b>${esc(u.nombre)}</b><span class="mut">${ROL[u.rol]||''}${u.rol==='sucursal'?' - '+esc(u.sucursal):''}</span></button>`).join('')}</div><div class="bar"><label>Contraseña<input type="password" id="lp" autocomplete="current-password"></label><button class="pri" id="lg">Entrar</button></div><button class="lk" id="fg">¿Olvidaste tu contraseña?</button> <button class="lk" id="fr">Restablecer todos los usuarios</button><p id="le" class="err" role="alert"></p>`}
+setTimeout(()=>{if(!usrOk&&!me)$('#lbody').innerHTML='<p class="err">No hay conexión con la base de datos. Revisa tu internet y la configuración de Supabase en index.html.</p>'},15000);
+async function doLogin(){const u=usr.find(x=>x._id===pick),e=$('#le');
+  if(!u)return e.textContent='Elige un usuario de la lista';
+  try{if(await uh(u.usuario,$('#lp').value)===u.hash){if(u.cambiar)drawChange(u);else enter(u)}else{e.textContent='Contraseña incorrecta';$('#lp').select()}}catch(x){e.textContent='Este navegador no permite validar la contraseña'}}
+$('#login').addEventListener('click',async e=>{const t=e.target.closest('button');if(!t)return;
+  if(t.dataset.pick){pick=t.dataset.pick;document.querySelectorAll('.ucard').forEach(b=>b.setAttribute('aria-pressed',b===t));$('#lp').focus();return}
+  if(t.id==='fr'){if(!(await askPw('Se borrarán TODOS los usuarios y tendrás que crear un administrador nuevo. Los pedidos, el catálogo y la trazabilidad no se tocan.',true)))return;
+    try{for(const u of [...usr])await db.doc('usuarios/'+u._id).delete();sessionStorage.removeItem('sess');pick='';toast('Usuarios eliminados. Crea el administrador nuevo')}catch(x){toast('No se pudo completar')}return}
+  if(t.id==='fg')return drawRecover();
+  if(t.id==='rb')return drawLogin(true);
+  if(t.id==='cg'){const u=usr.find(x=>x._id===t.dataset.u),a=$('#n1').value,b=$('#n2').value,e=$('#le');
+    if(!u)return;if(a.length<4)return e.textContent='La contraseña debe tener 4 o más caracteres';if(a!==b)return e.textContent='Las contraseñas no coinciden';
+    try{const h=await uh(u.usuario,a);await db.doc('usuarios/'+u._id).update({hash:h,cambiar:false});lock=false;enter({...u,hash:h,cambiar:false})}catch(x){e.textContent='No se pudo guardar la contraseña'}return}
+  if(t.id==='rg'){const e=$('#le'),u=usr.find(x=>x._id===key($('#ru').value.trim().toLowerCase())&&x.rol==='admin'&&x.activo!==false),pw=$('#rp').value;
+    try{if(!u||!u.rec||await rh(u.usuario,$('#rc').value)!==u.rec)return e.textContent='Usuario o código incorrecto';
+      if(pw.length<4)return e.textContent='La nueva contraseña debe tener 4 o más caracteres';
+      const c=recCode();await db.doc('usuarios/'+u._id).update({hash:await uh(u.usuario,pw),rec:await rh(u.usuario,c),cambiar:false});
+      pick=u._id;drawLogin(true);await showSecret('Contraseña restablecida','Este es tu nuevo código de recuperación; el anterior ya no sirve. Guárdalo en un lugar seguro.',c)}catch(x){e.textContent='No se pudo recuperar el acceso'}return}
+  if(t.id==='lg')return doLogin();
+  if(t.id==='ac'){const us=$('#au').value.trim().toLowerCase(),nm=$('#an').value.trim(),pw=$('#ap').value;
+    if(!us||!nm||pw.length<4)return $('#le').textContent='Completa los tres campos (contraseña de 4 o más caracteres)';
+    if(!db)return $('#le').textContent='Sin conexión con la base de datos';
+    try{const code=recCode();await db.doc('usuarios/'+key(us)).set({usuario:us,nombre:nm,rol:'admin',sucursal:'',activo:true,hash:await uh(us,pw),rec:await rh(us,code)});pick=key(us);await showSecret('Código de recuperación','Guárdalo en un lugar seguro: sirve para recuperar tu acceso si olvidas la contraseña. Solo se muestra ahora.',code)}catch(x){$('#le').textContent='No se pudo crear el usuario'}}});
+$('#login').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='lp')doLogin()});
+function applyRole(){const t=TABS[me.rol]||[],sc=me.rol==='sucursal';
+  document.body.dataset.rol=me.rol;
+  document.querySelectorAll('nav button').forEach(b=>b.hidden=!t.includes(b.dataset.v));
+  const sel=document.querySelector('nav button[aria-selected=true]');
+  if(!sel||sel.hidden)document.querySelector('nav button:not([hidden])').click();
+  [$('#suc'),$('#fsuc')].forEach(x=>{if(sc)x.value=me.sucursal;x.disabled=sc});
+  $('#por').value=me.nombre;$('#por').readOnly=true;
+  $('#wn').textContent=me.nombre+' ('+(ROL[me.rol]||'')+')';
+  drawAll()}
+function enter(u){me=u;sessionStorage.setItem('sess',u._id);$('#login').hidden=true;$('#app').hidden=false;$('#who').hidden=false;applyRole()}
+function logout(msg){me=null;lock=false;sessionStorage.removeItem('sess');draft={};document.body.dataset.rol='';$('#app').hidden=true;$('#who').hidden=true;$('#login').hidden=false;pick='';drawLogin();if(msg)toast(msg)}
+$('#out').onclick=()=>logout();
+function sessionCheck(){
+  if(me){const u=usr.find(x=>x._id===me._id);if(!u||u.activo===false)return logout('Tu usuario fue desactivado o eliminado');me=u;applyRole();return}
+  const u=usr.find(x=>x._id===sessionStorage.getItem('sess')&&x.activo!==false);if(u)enter(u);else drawLogin()}
+function drawUsr(){const t=$('#tusr');
+  t.innerHTML=usr.length?'<tr><th>Usuario</th><th>Nombre</th><th>Rol</th><th>Sucursal</th><th>Estado</th><th></th></tr>'+[...usr].sort((a,b)=>a.nombre.localeCompare(b.nombre)).map(u=>`<tr><td>${esc(u.usuario)}</td><td>${esc(u.nombre)}</td><td>${ROL[u.rol]||''}</td><td>${esc(u.sucursal||'Todas')}</td><td>${u.activo===false?'Inactivo':'Activo'}</td><td><button data-ue="${esc(u._id)}">Editar</button> <button data-ut="${esc(u._id)}">${u.activo===false?'Activar':'Desactivar'}</button> <button data-ur="${esc(u._id)}">Restablecer contraseña</button> ${u.rol==='admin'?`<button data-uc="${esc(u._id)}">Código de recuperación</button> `:''}<button data-ud="${esc(u._id)}">Eliminar</button></td></tr>`).join(''):'<tr><td class="empty">Sin usuarios.</td></tr>'}
+$('#ur').addEventListener('input',()=>{$('#us').disabled=$('#ur').value!=='sucursal'});
+$('#usave').onclick=async()=>{const f=$('#fusr');if(!f.reportValidity()||!db)return;
+  const raw=$('#uu').value.trim().toLowerCase(),id=key(raw),old=usr.find(x=>x._id===id),pw=$('#up').value,rol=$('#ur').value;
+  if((!old||pw)&&pw.length<4)return toast('La contraseña debe tener 4 o más caracteres');
+  if(old&&old.rol==='admin'&&rol!=='admin'&&adminsActivos()<=1)return toast('Debe quedar al menos un administrador activo');
+  try{const{_id:_x,...keep}=old||{},nuevoAdmin=rol==='admin'&&!(old&&old.rec),code=nuevoAdmin?recCode():'';
+    await db.doc('usuarios/'+id).set({...keep,usuario:raw,nombre:$('#un').value.trim(),rol,sucursal:rol==='sucursal'?$('#us').value:'',activo:old?old.activo!==false:true,hash:pw?await uh(raw,pw):old.hash,...(nuevoAdmin?{rec:await rh(raw,code)}:{})});
+    f.reset();$('#uu').readOnly=false;$('#us').disabled=false;toast('Usuario guardado');
+    if(nuevoAdmin)await showSecret('Código de recuperación de '+raw,'Guárdalo en un lugar seguro. Solo se muestra ahora.',code)}catch(x){toast('No se pudo guardar el usuario')}};
+$('#tusr').addEventListener('click',async e=>{const t=e.target,id=t.dataset.ue||t.dataset.ut||t.dataset.ud||t.dataset.ur||t.dataset.uc;if(!id)return;const u=usr.find(x=>x._id===id);if(!u)return;
+  if(t.dataset.ur){if(!confirm('¿Restablecer la contraseña de '+u.nombre+'? Se generará una contraseña temporal.'))return;
+    try{const tp=tmpPw();await db.doc('usuarios/'+id).update({hash:await uh(u.usuario,tp),cambiar:true});await showSecret('Contraseña temporal','Entrégasela a '+u.nombre+'. Al entrar deberá crear una nueva. Solo se muestra ahora.',tp)}catch(x){toast('No se pudo restablecer')}return}
+  if(t.dataset.uc){if(!confirm('¿Generar un código de recuperación nuevo? El anterior dejará de servir.'))return;
+    try{const c=recCode();await db.doc('usuarios/'+id).update({rec:await rh(u.usuario,c)});await showSecret('Código de recuperación de '+u.nombre,'Guárdalo en un lugar seguro. Solo se muestra ahora.',c)}catch(x){toast('No se pudo generar el código')}return}
+  if(t.dataset.ue){$('#uu').value=u.usuario;$('#uu').readOnly=true;$('#un').value=u.nombre;$('#ur').value=u.rol;$('#us').disabled=u.rol!=='sucursal';if(u.sucursal)$('#us').value=u.sucursal;$('#up').value='';scrollTo(0,0);return}
+  if(u._id===me._id)return toast('No puedes desactivar ni eliminar tu propio usuario');
+  if(u.rol==='admin'&&u.activo!==false&&adminsActivos()<=1)return toast('Debe quedar al menos un administrador activo');
+  try{if(t.dataset.ut){await db.doc('usuarios/'+id).update({activo:u.activo===false});toast('Usuario actualizado')}
+    else if(await askPw('Eliminar al usuario '+u.nombre)){await db.doc('usuarios/'+id).delete();toast('Usuario eliminado')}}catch(x){toast('No se pudo completar la acción')}});
+drawLogin();
+function drawAll(){fillSel();drawNew();drawDesp();drawTra();drawPed();drawCat()}
+drawAll();
+(async function(){
+  const N=['catalogo','pedidos','despachos','usuarios'],subs={catalogo:[],pedidos:[],despachos:[],usuarios:[]},store={catalogo:{},pedidos:{},despachos:{},usuarios:{}};
+  if(!window.supabase||SB_URL.includes('TU-PROYECTO')){$('#lbody').innerHTML='<p class="err">Falta configurar Supabase: abre index.html y escribe tu URL y tu clave en las dos primeras líneas del script.</p>';return}
+  const sb=supabase.createClient(SB_URL,SB_KEY);
+  const snap=n=>({docs:Object.values(store[n]).map(d=>({id:d._id,data:()=>{const x={...d};delete x._id;return x}}))});
+  const fire=n=>subs[n].forEach(f=>f(snap(n)));
+  const strip=v=>{const x={...v};delete x._id;return x};
+  const put=async(n,id,v)=>{const d=strip(v);const{error}=await sb.from('docs').upsert({col:n,id,data:d});if(error)throw error;store[n][id]={...d,_id:id};fire(n)};
+  sb.channel('docs-sync').on('postgres_changes',{event:'*',schema:'public',table:'docs'},p=>{
+    const r=p.eventType==='DELETE'?p.old:p.new;if(!r||!store[r.col])return;
+    if(p.eventType==='DELETE')delete store[r.col][r.id];else store[r.col][r.id]={...r.data,_id:r.id};fire(r.col)}).subscribe();
+  try{for(let from=0;;from+=1000){const{data,error}=await sb.from('docs').select('col,id,data').order('col').order('id').range(from,from+999);if(error)throw error;
+      data.forEach(r=>{if(store[r.col])store[r.col][r.id]={...r.data,_id:r.id}});if(data.length<1000)break}}
+  catch(e){$('#lbody').innerHTML='<p class="err">No se pudo conectar con Supabase: '+esc(e.message||e)+'</p>';return}
+  db={
+    nextNum:async()=>{const{data,error}=await sb.rpc('next_correlativo');if(error)throw error;return Number(data)},
+    collection:n=>({onSnapshot:f=>{subs[n].push(f);f(snap(n))},add:v=>put(n,Date.now().toString(36)+Math.random().toString(36).slice(2,8),v)}),
+    doc:p=>{const[n,id]=p.split('/');return{
+      set:v=>put(n,id,v),
+      update:async v=>{const patch=strip(v);const{error}=await sb.rpc('doc_update',{p_col:n,p_id:id,p_patch:patch});if(error)throw error;store[n][id]={...store[n][id],...patch};fire(n)},
+      delete:async()=>{const{error}=await sb.from('docs').delete().eq('col',n).eq('id',id);if(error)throw error;delete store[n][id];fire(n)}}}
+  };
+  dl={save:async({filename,data})=>{const a=document.createElement('a');a.href=URL.createObjectURL(data instanceof Blob?data:new Blob([data],{type:'text/plain;charset=utf-8'}));a.download=filename;document.body.appendChild(a);a.click();a.remove()}};
+  db.collection('catalogo').onSnapshot(s=>{cat=s.docs.map(d=>({...d.data(),_id:d.id}));drawAll()});
+  db.collection('pedidos').onSnapshot(s=>{ped=s.docs.map(d=>({...d.data(),_id:d.id,lineas:d.data().lineas||[]})).sort((a,b)=>b.creado-a.creado);drawPed();drawDesp()});
+  db.collection('despachos').onSnapshot(s=>{desp=s.docs.map(d=>({...d.data(),_id:d.id,lineas:d.data().lineas||[]})).sort((a,b)=>b.ts-a.ts);drawTra()});
+  db.collection('usuarios').onSnapshot(s=>{usr=s.docs.map(d=>({...d.data(),_id:d.id}));usrOk=true;drawUsr();sessionCheck()});
+  $('#bk').onclick=()=>dl.save({filename:'respaldo_pedidos_'+new Date().toISOString().slice(0,10)+'.json',data:JSON.stringify(store)});
+  $('#pf').onchange=async e=>{const f=e.target.files[0];if(f)$('#paste').value=(await f.text()).replace(/^\ufeff/,'').replace(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/g,';').replace(/"/g,'')};
+  if(!Object.keys(store.catalogo).length){[['C1002172','Aderezo Cesar 800 G'],['C1002310','Aderezo De Tahini -naranja 750 Gramos'],['C1002068','Aderezo Mostaza Miel 32 Oz'],['C1002076','Aderezo Yogurt Y Eneldo 32 Oz']].forEach(([c,p])=>db.doc('catalogo/'+c).set({codigo:c,producto:p,area:'COCINA',subarea:'COCINA',unidad:'PACK'}).catch(()=>{}))}
+  drawUso();
+})();
+</script>
+</body>
+</html>
